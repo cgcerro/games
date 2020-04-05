@@ -34,7 +34,6 @@ let printScena = scena => {
     for (row = 0; row < 10; row++) {
         for (col = 0; col < 10; col++) {
             ctx.fillStyle = scena[row][col];
-            //console.log(row * widthElement, col * heightElement, widthElement, heightElement);
             ctx.fillRect(col * widthElement, row * heightElement, widthElement, heightElement);
         }
     }
@@ -60,13 +59,36 @@ let Player = function (x,y) {
         this.x = this.moveRight ? this.x + speed : this.x - speed;
 
         //Check colision with mainPlayer
+        if (this.collisionMainPlayer(mainPlayer)) {
+            mainPlayer.x = 1;
+            mainPlayer.y = 0;
+            mainPlayer.calculateReal();
+            mainPlayer.lifes--;
+            if (mainPlayer.lifes <= 0) {
+                alert('you lose');
+                location.reload();
+            }
+        }
     }
 
     this.collisionMainPlayer = (mainPlayer) => {
         x1 = this.x;
         x2 = this.x + 50;
-        mpx1 = m
-        return this.x <= mainPlayer.x + 50 && this.x > mainPlayer.x || this.x + 50 
+        mpx1 = mainPlayer.realx;
+        mpx2 = mainPlayer.realx + 50;
+        y1 = this.y;
+        y2 = this.y + 50;
+        mpy1 = mainPlayer.realy;
+        mpy2 = mainPlayer.realy + 50;
+        
+        ret =
+        ( (x1 < mpx2 && x1 > mpx1) || (x2 > mpx1 && x2 < mpx2) )
+        &&
+        ( (y1 < mpy2 && y1 > mpy1) || (y2 > mpy1 && y2 < mpy2) || (y1 == mpy1) )
+        ;
+        
+        return ret;
+        
     }
 }
 
@@ -74,6 +96,14 @@ let MainPlayer = function (x,y) {
     this.x = x;
     this.y = y;
     this.hasKey = false;
+    this.lifes = 3;
+    this.realx = this.x * widthElement;
+    this.realy = this.y * heightElement;
+
+    this.calculateReal = () => {
+        this.realx = this.x * widthElement;
+        this.realy = this.y * heightElement;
+    }
 
     this.draw = () => {
         ctx.drawImage(imgRex, this.x * widthElement, this.y * heightElement)
@@ -82,14 +112,15 @@ let MainPlayer = function (x,y) {
     this.moveUp = () => {
         if (this.cellValid(this.y - 1, this.x)) {
             this.y--;
+            this.calculateReal();
             this.objectsLogic();
         }
     }
 
     this.moveDown = () => {
-        console.log(this.cellValid(this.y + 1, this.x));
         if (this.cellValid(this.y + 1, this.x)) {
             this.y++;
+            this.calculateReal();
             this.objectsLogic();
         }
     }
@@ -97,6 +128,7 @@ let MainPlayer = function (x,y) {
     this.moveRight = () => {
         if (this.cellValid(this.y, this.x + 1)) {
             this.x++;
+            this.calculateReal();
             this.objectsLogic();
         }
     }
@@ -104,6 +136,7 @@ let MainPlayer = function (x,y) {
     this.moveLeft = () => {
         if (this.cellValid(this.y, this.x - 1)) {
             this.x--;
+            this.calculateReal();
             this.objectsLogic();
         }
     }
@@ -111,7 +144,7 @@ let MainPlayer = function (x,y) {
     this.text = () => {
         ctx.font = '30px impact';
         ctx.fillStyle = '#333333';
-        ctx.fillText(this.x+","+this.y+","+scena[this.y][this.x], 20 , 20)
+        ctx.fillText("Life:" + this.lifes, 20 , 20)
     }
 
     this.cellValid = (row, col) => {
@@ -172,7 +205,7 @@ drawObjects = (objects) => {
 
 
 document.addEventListener('keydown', (key) => {
-    console.log(key.code);
+    
     switch (key.code) {
         case 'ArrowUp':
             mainPlayer.moveUp();
