@@ -12,9 +12,9 @@ let imgKey;
 let widthElement = 50;
 let heightElement = 50;
 
-let water = '#03adfc';
-let gress = '#499e5f';
-let earth = '#52311f'
+let water = 'watter';
+let gress = 'gress';
+let earth = 'earth'
 
 let scena = [
     [water, gress, gress, gress, earth, earth, earth, earth, earth, gress,],
@@ -30,11 +30,32 @@ let scena = [
 ];
 
 
+let tileMap = new Image();
+tileMap.src = 'img/tilemap.png';
+
+
 let printScena = scena => {
     for (row = 0; row < 10; row++) {
         for (col = 0; col < 10; col++) {
-            ctx.fillStyle = scena[row][col];
-            ctx.fillRect(col * widthElement, row * heightElement, widthElement, heightElement);
+            //ctx.fillStyle = scena[row][col];
+            //ctx.fillRect(col * widthElement, row * heightElement, widthElement, heightElement);
+            let tile = scena[row][col];
+            switch (tile) {
+                case "watter":
+                    tileCol = 3;
+                    tileRow = 1;
+                    break;
+                case "gress":
+                    tileCol = 0;
+                    tileRow = 2;
+                break;
+                case "earth":
+                        tileCol = 2;
+                        tileRow = 0;
+                break;
+            }
+            ctx.drawImage(tileMap, tileCol * 32, tileRow * 32, 32, 32, col * widthElement, row * widthElement, widthElement, heightElement);
+
         }
     }
 }
@@ -46,8 +67,9 @@ let Player = function (x,y) {
     this.moveRight = true;
 
     this.draw = () => {
-        ctx.fillStyle = 'red';
-        ctx.fillRect(this.x, this.y, 50, 50)
+        //ctx.fillStyle = 'red';
+        //ctx.fillRect(this.x, this.y, 50, 50)
+        ctx.drawImage(tileMap, 0, 0, 32, 32, this.x , this.y, widthElement, heightElement)
     }
 
     this.move = (speed) => {
