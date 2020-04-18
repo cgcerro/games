@@ -188,9 +188,14 @@ class Scena {
                 }
                 this.downAll(row);
                 if (this.checkWin()) {
-                    //alert("you win");
-                    this.scenaNumber++;
-                    this.scena = scenas[this.scenaNumber];
+                    if (this.scenaNumber >= 3) {
+                        alert("you win");
+                        top.location.reload();
+                    } else {
+                        this.scenaNumber++;
+                        this.scena = scenas[this.scenaNumber];
+                    }
+                    
                 }
             }
         }
