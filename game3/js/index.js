@@ -19,6 +19,25 @@ const canvasHeight = 640 / 2;
 imgFire = new Image();
 imgFire.src = 'img/fire.png';
 
+/*
+let soundBip = new Howl({
+    src: ['sounds/bip.wav'],
+    loop: false
+});
+*/
+
+let soundExplosion = new Howl({
+    src: ['sounds/explosion.wav'],
+    loop: false
+});
+
+let music = new Howl({
+    src: ['sounds/music.ogg'],
+    loop: true,
+    autoplay: true,
+});
+
+
 scena1 =
 [
     [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
@@ -173,6 +192,7 @@ class Scena {
                     allComplete = false;
             }
             if (allComplete) {
+                soundExplosion.play();
                 //draw fire
                 this.firedRows[row] = 1;
                 
@@ -512,6 +532,7 @@ class Player {
                 this.fixToScena(scena);
             } else {
                 this.y++;
+                //soundBip.play();
             }
             this.counter = 0;
         }
@@ -586,6 +607,9 @@ let init = () => {
     ctx2 = canvas2.getContext('2d');
     canvas.style.width = canvasWidth;
     canvas.style.height = canvasHeight;
+
+    //console.log(music)
+    music.play();
 
     initKeyboard();
 
